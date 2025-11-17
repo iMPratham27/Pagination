@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
 import { postModel } from "../models/postModel";
 
-export const createPost = async(req: Request, res: Response): Promise<void> => {
+export const createPost = async(req: Request, res: Response) => {
     try{
         const { post } = req.body;
         if(!post){
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Post cannot be empty."
             });
-            return;
         }
 
         const newPost = await postModel.create({ post: post.trim() })
@@ -16,21 +15,21 @@ export const createPost = async(req: Request, res: Response): Promise<void> => {
             create({ feild name in Db: value from request(i.e. user input) })
         */
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Created new Post!!",
             data: newPost
         });
 
     }catch(err){
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Failed to create a new post."
         })
     }
 }
 
-export const getPosts = async(req: Request, res: Response): Promise<void> => {
+export const getPosts = async(req: Request, res: Response) => {
     try{
         const page = Math.max(1, parseInt(req.query.page as string) || 1);
         /* 
@@ -61,7 +60,7 @@ export const getPosts = async(req: Request, res: Response): Promise<void> => {
 
         const totalPages = Math.ceil(total/limit);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: posts,
             meta: {
@@ -73,7 +72,7 @@ export const getPosts = async(req: Request, res: Response): Promise<void> => {
         });
 
     }catch(err){
-        res.status(500).json({
+        return res.status(500).json({
             sucess: false,
             message: "Failed to fetch posts."
         });
